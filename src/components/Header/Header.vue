@@ -26,18 +26,18 @@
         </a>
       </b-nav-item>
     </b-nav>
-    <!-- <b-nav>
-      <b-form class="d-sm-down-none ml-5" inline>
+    <b-nav>
+      <b-form @submit.prevent="search" class="d-sm-down-none ml-5" inline>
         <b-form-group>
           <b-input-group class="input-group-no-border">
             <div class="input-group-addon d-flex align-items-center">
               <i class="la la-search px-3" />
             </div>
-            <b-input id="search-input" placeholder="Search Dashboard" />
+            <b-input id="search-input" placeholder="Search"/>
           </b-input-group>
         </b-form-group>
       </b-form>
-    </b-nav> -->
+    </b-nav>
     <a  class="navbarBrand d-md-none">
       <i class="fa fa-circle text-gray mr-n-sm" />
       <i class="fa fa-circle text-warning" />
@@ -158,6 +158,9 @@ export default {
     logout() {
       this.$store.dispatch('auth/logout',{vs: this.$vs})
     },
+    search() {
+      alert("Buscando");
+    }
   },
   created() {
     if (window.innerWidth > 576) {
