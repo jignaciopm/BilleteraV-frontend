@@ -11,6 +11,9 @@ import ErrorPage from '@/pages/Error/Error';
 // Core
 import TypographyPage from '@/pages/Typography/Typography';
 
+// Movimientos
+import Movements from '@/pages/Movements/Movements';
+
 // Tables
 import TablesBasicPage from '@/pages/Tables/Basic';
 
@@ -74,6 +77,11 @@ export default new Router({
           path: 'dashboard',
           name: 'AnalyticsPage',
           component: AnalyticsPage,
+        },
+        {
+          path: 'movements',
+          name: 'Movements',
+          component: Movements,
         },
         {
           path: 'typography',

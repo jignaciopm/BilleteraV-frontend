@@ -5,7 +5,10 @@
     @mouseleave="sidebarMouseLeave"
   >
     <header class="logo">
-      <router-link to="/app"><span class="text-warning">Billetera</span>V</router-link>
+      <router-link to="/app" style="padding: 15px">
+        <img src="../../../public/favicon.png" width="20px" alt="" style="margin-right: 15px">
+        <span class="text-warning">Billetera</span>V
+      </router-link>
     </header>
     <ul class="nav">
       <NavLink
@@ -16,6 +19,13 @@
         isHeader
       />
       <NavLink
+        header="Movimientos"
+        link="/app/movements"
+        iconName="flaticon-equal-1"
+        index="movements"
+        isHeader
+      />
+      <!--<NavLink
         header="Typography"
         link="/app/typography"
         iconName="flaticon-list"
@@ -47,7 +57,7 @@
           { header: 'Icons', link: '/app/components/icons' },
           { header: 'Maps', link: '/app/components/maps' },
         ]"
-      />
+      />-->
     </ul>
     <p>
     <h5 class="navTitle">
