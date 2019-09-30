@@ -5,6 +5,7 @@
       <b-breadcrumb-item active>Principal</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="page-title">Principal<!-- Mes de {{getCurrentMonth.string}} --></h1>
+    <pre>{{response}}</pre>
     <b-row>
       <b-col lg="3" sm="6" xs="12">
         <div class="pb-xlg h-100">
@@ -23,6 +24,29 @@
                 </div>
                 <div class="mt">
                   <h6>{{((available/balance)*100).toFixed(2)}}%</h6><p class="text-muted mb-0 mr"><small>Porct.</small></p>
+                </div>
+              </div>
+            </div>
+          </Widget>
+        </div>
+      </b-col>
+      <b-col lg="3" sm="6" xs="12">
+        <div class="pb-xlg h-100">
+          <Widget class="h-100 mb-0" title="Disponible">
+            <div id="incomesAll">
+              <div class="d-flex justify-content-between align-items-center mb-lg">
+                <h2>$ {{ available.toFixed(2) }}</h2>
+                <i class="la la-arrow-right text-success rotate-315" />
+              </div>
+              <div class="d-flex flex-wrap justify-content-between">
+                <div class="mt">
+                  <h6>$ {{transfer.toFixed(2)}}</h6><p class="text-muted mb-0 mr"><small>Transferencia</small></p>
+                </div>
+                <div class="mt">
+                  <h6>$ {{cash.toFixed(2)}}</h6><p class="text-muted mb-0"><small>Efectivo</small></p>
+                </div>
+                <div class="mt">
+                  <h6>$ {{banks.bofa.toFixed(2)}}</h6><p class="text-muted mb-0"><small>BofA</small></p>
                 </div>
               </div>
             </div>
@@ -127,6 +151,88 @@
         </div>
       </b-col> -->
     </b-row>
+
+    <b-row>
+      <b-col lg="3" sm="6" xs="12">
+        <div class="pb-xlg h-100">
+          <Widget class="h-100 mb-0" title="Gastos">
+            <pie-chart :data="expenses" />
+          </Widget>
+        </div>
+      </b-col>
+      <b-col lg="3" sm="6" xs="12">
+        <div class="pb-xlg h-100">
+          <Widget class="h-100 mb-0" title="Disponible">
+            <div id="incomesAll">
+              <div class="d-flex justify-content-between align-items-center mb-lg">
+                <h2>$ {{ available.toFixed(2) }}</h2>
+                <i class="la la-arrow-right text-success rotate-315" />
+              </div>
+              <div class="d-flex flex-wrap justify-content-between">
+                <div class="mt">
+                  <h6>$ {{transfer.toFixed(2)}}</h6><p class="text-muted mb-0 mr"><small>Transferencia</small></p>
+                </div>
+                <div class="mt">
+                  <h6>$ {{cash.toFixed(2)}}</h6><p class="text-muted mb-0"><small>Efectivo</small></p>
+                </div>
+                <div class="mt">
+                  <h6>$ {{banks.bofa.toFixed(2)}}</h6><p class="text-muted mb-0"><small>BofA</small></p>
+                </div>
+              </div>
+            </div>
+          </Widget>
+        </div>
+      </b-col>
+      <b-col lg="3" sm="6" xs="12">
+        <div class="pb-xlg h-100">
+          <Widget class="h-100 mb-0" title="Transferencias">
+            <div id="incomesAll">
+              <div class="d-flex justify-content-between align-items-center mb-lg">
+                <h2>$ {{ transfer.toFixed(2) }}</h2>
+                <i class="la la-arrow-right text-success rotate-315" />
+              </div>
+              <div class="d-flex flex-wrap justify-content-between">
+                <div class="mt">
+                  <h6>$ {{banks.chase.toFixed(2)}}</h6><p class="text-muted mb-0 mr"><small>Chase</small></p>
+                </div>
+                <div class="mt">
+                  <h6>$ {{banks.banpan.toFixed(2)}}</h6><p class="text-muted mb-0"><small>BanPan</small></p>
+                </div>
+                <div class="mt">
+                  <h6>$ {{banks.bofa.toFixed(2)}}</h6><p class="text-muted mb-0"><small>BofA</small></p>
+                </div>
+              </div>
+            </div>
+          </Widget>
+        </div>
+      </b-col>
+      <b-col lg="3" sm="6" xs="12">
+        <div class="pb-xlg h-100">
+          <Widget class="h-100 mb-0" title="Efectivo">
+            <div id="incomesAll">
+              <div class="d-flex justify-content-between align-items-center mb-lg">
+                <h2>$ {{ cash.toFixed(2) }}</h2>
+                <i class="la la-arrow-right text-success rotate-315" />
+              </div>
+            </div>
+          </Widget>
+        </div>
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <b-col xs="12">
+        <Widget
+          title="<h3 class='d-flex align-items-center pb-1 fw-semi-bold'>Ingresos vs. Egresos</h3>"
+          bodyClass="p-10 mt"
+          customHeader
+        >
+          <p>Se muestran todos los gastos por categorias desde que usted se registro en BilleteraV</p>
+          <!-- <column-chart :data="expenses"></column-chart> -->
+          <column-chart :data="incomesVsExpensesByMonth" prefix="$" :messages="{empty: 'No data'}" />
+        </Widget>
+      </b-col>
+    </b-row>
     
     <b-row>
       <b-col xs="12">
@@ -137,7 +243,7 @@
         >
           <p>Se muestran todos los gastos por categorias desde que usted se registro en BilleteraV</p>
           <!-- <column-chart :data="expenses"></column-chart> -->
-          <line-chart :data="expensesByMonth" />
+          <column-chart :data="expensesByMonth" prefix="$" :messages="{empty: 'No data'}" />
         </Widget>
       </b-col>
     </b-row>
@@ -246,6 +352,7 @@ export default {
   components: { Widget },
   data() {
     return {
+      response: null,
       currentMonth: 0,
       amountTotalCurrentMonthlyPayment: 0,
       balance: 0,
@@ -259,7 +366,8 @@ export default {
         bofa: 0
       },
       expenses: [],
-      expensesByMonth: []
+      expensesByMonth: [],
+      incomesVsExpensesByMonth: []
     };
   },
   computed: {
@@ -310,6 +418,7 @@ export default {
         headers: header(this.tokenValue)
       })
         .then(response => {
+          this.response = response.data
           this.balance = response.data.balance
           this.available = response.data.disponible
           this.debtors = response.data.deudores
@@ -320,6 +429,7 @@ export default {
           this.banks.bofa = response.data.bofa
           this.expenses = response.data.gastos
           this.expensesByMonth = response.data.gastosPorMes
+          this.incomesVsExpensesByMonth = response.data.ingresosVsEgresosPorMes
         })
         .catch(() => {
           Messenger().post("Error!");
