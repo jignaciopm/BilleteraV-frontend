@@ -18,7 +18,13 @@
                 </b-form-group>
             </b-form>
         </b-nav>
-        <b-table striped hover responsive :items="data" class="b-table-scroll"></b-table>
+        <b-table 
+            sort-icon-left
+            :items="data" 
+            class="b-table-scroll" 
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :fields="fields" />
         <b-pagination
         v-model="currentPage"
         :total-rows="rows"
@@ -47,6 +53,18 @@ export default {
         currentPage: 1,
         rows: 500,
         searchValue: "",
+        sortBy: 'fecha',
+        sortDesc: true,
+        fields: [
+          { key: 'id', sortable: true },
+          { key: 'fecha', sortable: true },
+          { key: 'concepto', sortable: true },
+          { key: 'monto', sortable: true },
+          { key: 'tipo', sortable: true },
+          { key: 'medio', sortable: true },
+          { key: 'banco', sortable: true },
+          { key: 'gasto', sortable: true },
+        ],
         query: {
             search: ""
         },
