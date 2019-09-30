@@ -20,17 +20,16 @@
           </b-alert>
           <div class="form-group">
             <input class="form-control no-border" ref="username"
-              required type="text" name="username" placeholder="Username" />
+              type="text" name="username" placeholder="Username" />
           </div>
           <div class="form-group">
             <input class="form-control no-border" ref="password"
-            required type="password" name="password" placeholder="Password" />
+              type="password" name="password" placeholder="Password" />
           </div>
           <div class="clearfix">
             <div class="btn-toolbar float-right">
               <!-- <b-button type="reset" size="sm" variant="default">Create an Account</b-button> -->
               <b-button type="submit" size="sm" variant="inverse" v-show="!login">Login</b-button>
-              <b-button size="sm" variant="inverse" v-show="login" @click="logout">Logout</b-button>
             </div>
           </div>
           <!-- <div class="row no-gutters mt-3">
@@ -82,19 +81,20 @@ export default {
       const username = this.$refs.username.value;
       const password = this.$refs.password.value;
 
-      this.$store.dispatch('auth/retrieveToken', {
-        username: username,
-        password: password,
-        vs: this.$vs
-      })
-
-      /*if (username.length !== 0 && password.length !== 0) {
-        window.localStorage.setItem('authenticated', true);
-        this.$router.push('/app/main/analytics');
-      }*/
-    },
-    logout() {
-      this.$store.dispatch('auth/logout')
+      if(username != "" && password != "") {
+        this.$store.dispatch('auth/retrieveToken', {
+          username: username,
+          password: password,
+          vs: this.$vs
+        })
+      }
+      else {
+        this.$vs.notify({
+          title:'Campos Requeridos',
+          text:'Complete todos los campos requeridos para hacer login',
+          color:'danger'
+        })
+      }
     }
   }
 };
