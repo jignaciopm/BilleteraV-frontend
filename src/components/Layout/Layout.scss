@@ -1,7 +1,7 @@
 @import '../../styles/app.scss';
 
 .root {
-  height: 100%;
+  height: 100vh;
   position: relative;
   left: 0;
   transition: left $sidebar-transition-time ease-in-out;
@@ -59,3 +59,5 @@
   bottom: 15px;
   color: $text-muted;
 }
+
+.b-table-scroll { @include scroll-bar($sidebar-scrollbar-bg); }
