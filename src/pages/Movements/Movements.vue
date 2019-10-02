@@ -5,26 +5,46 @@
       <b-breadcrumb-item active>Movimientos</b-breadcrumb-item>
     </b-breadcrumb>
     <h1 class="page-title">Movimientos<!-- Mes de {{getCurrentMonth.string}} --></h1>
-    <div v-loading="loading">
-        <b-nav>
-            <b-form @submit.prevent="search" class="d-sm-down-none" inline>
-                <b-form-group>
-                <b-input-group class="input-group-no-border">
-                    <div class="input-group-addon d-flex align-items-center">
-                    <i class="la la-search px-3" />
-                    </div>
-                    <b-input id="search-input" v-model="searchValue" placeholder="Buscar movimiento"/>
-                </b-input-group>
-                </b-form-group>
-            </b-form>
+    <div>
+      <pre>{{selected}}</pre>
+        <b-nav class="d-flex justify-content-between">
+          <b-form-checkbox-group
+            v-model="selected"
+            :options="options"
+            name="buttons-1"
+            button-variant="outline-default"
+            buttons
+            size="sm"
+          ></b-form-checkbox-group>
+          <b-form @submit.prevent="search" class="d-sm-down-none" inline>
+            <b-form-group>
+            <b-input-group class="input-group-no-border">
+                <div class="input-group-addon d-flex align-items-center">
+                <i class="la la-search px-3" />
+                </div>
+                <b-input id="search-input" v-model="searchValue" placeholder="Buscar movimiento"/>
+            </b-input-group>
+            </b-form-group>
+          </b-form>
         </b-nav>
         <b-table 
+            :busy="loading"
             sort-icon-left
             :items="data" 
             class="b-table-scroll" 
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
-            :fields="fields" />
+            :fields="fields"
+            show-empty>
+            <template v-slot:empty="scope">
+              <h5 class="text-center">No hay movimientos</h5>
+            </template>
+            <template v-slot:table-busy>
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+              </div>
+            </template>
+        </b-table>
         <b-pagination
         v-model="currentPage"
         :total-rows="rows"
@@ -65,6 +85,14 @@ export default {
           { key: 'banco', sortable: true },
           { key: 'gasto', sortable: true },
         ],
+        selected: [], // Must be an array reference!
+        options: [
+          { text: 'Comisiones', value: 'Comisiones' },
+          { text: 'Cambios', value: 'Cambios' },
+          { text: 'Medicinas', value: 'Medicinas' },
+          { text: 'Salidas', value: 'Salidas' },
+          { text: 'Ayuda familiar', value: 'Ayuda familiar' }
+        ],
         query: {
             search: ""
         },
@@ -79,7 +107,7 @@ export default {
   methods: {
     getData(search = '') {
         this.loading = true
-        HTTP.get(`movimientos?page=${this.currentPage}&search=${this.query.search}`, {
+        HTTP.get(`movimientos?page=${this.currentPage}&search=${this.query.search}&gasto=${this.selected.toString()}`, {
             headers: header(this.tokenValue)
         })
             .then(response => {
@@ -111,6 +139,9 @@ export default {
   watch: {
       currentPage: function() {
           this.getData()
+      },
+      selected: function() {
+        this.getData()
       }
   }
 };
