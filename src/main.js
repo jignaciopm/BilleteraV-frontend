@@ -4,6 +4,8 @@ import 'expose-loader?jQuery!jquery' // eslint-disable-line
 import 'expose-loader?$!jquery' // eslint-disable-line
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 import * as VueGoogleMaps from 'vue2-google-maps';
 import VueTouch from 'vue-touch';
 import Trend from 'vuetrend';

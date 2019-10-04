@@ -39,13 +39,8 @@
       </b-form>
     </b-nav>
     <a  class="navbarBrand d-md-none">
-      <i class="fa fa-circle text-gray mr-n-sm" />
-      <i class="fa fa-circle text-warning" />
-      &nbsp;
-      sing
-      &nbsp;
-      <i class="fa fa-circle text-warning mr-n-sm" />
-      <i class="fa fa-circle text-gray" />
+      <img src="../../../public/favicon.png" width="20px" alt="" style="margin-right: 15px">
+      <span>BilleteraV</span>
     </a>
     <b-nav class="ml-auto">
       <b-nav-item-dropdown
