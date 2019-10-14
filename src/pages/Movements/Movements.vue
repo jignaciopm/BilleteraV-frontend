@@ -6,29 +6,79 @@
     </b-breadcrumb>
     <h1 class="page-title">Movimientos<!-- Mes de {{getCurrentMonth.string}} --></h1>
     <div>
-      <pre>{{selected}}</pre>
+        <div v-show="showFilters">
+          <Widget class="h-100 mb-3" title="Filtros">
+            <b-row>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Gastos</h4>
+                  <select-all 
+                    name="gasto"
+                    selectAll="Seleccionar todos"
+                    unSelectAll="Deseleccionar todos"
+                    :options="filters.gastos.options"
+                    :selected.sync="filters.gastos.selected"
+                    :indeterminate.sync="filters.gastos.indeterminate"
+                    :allSelected.sync="filters.gastos.allSelected" />
+                </div>
+              </b-col>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Tipo</h4>
+                  <select-all 
+                    name="tipo"
+                    selectAll="Seleccionar todos"
+                    unSelectAll="Deseleccionar todos"
+                    :options="filters.tipo.options"
+                    :selected.sync="filters.tipo.selected"
+                    :indeterminate.sync="filters.tipo.indeterminate"
+                    :allSelected.sync="filters.tipo.allSelected" />
+                </div>
+              </b-col>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Medio</h4>
+                  <select-all 
+                    name="medio"
+                    selectAll="Seleccionar todos"
+                    unSelectAll="Deseleccionar todos"
+                    :options="filters.medio.options"
+                    :selected.sync="filters.medio.selected"
+                    :indeterminate.sync="filters.medio.indeterminate"
+                    :allSelected.sync="filters.medio.allSelected" />
+                </div>
+              </b-col>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Banco</h4>
+                  <select-all 
+                    name="banco"
+                    selectAll="Seleccionar todos"
+                    unSelectAll="Deseleccionar todos"
+                    :options="filters.banco.options"
+                    :selected.sync="filters.banco.selected"
+                    :indeterminate.sync="filters.banco.indeterminate"
+                    :allSelected.sync="filters.banco.allSelected" />
+                </div>
+              </b-col>
+            </b-row>
+
+            <b-nav class="d-flex justify-content-end">
+              <b-button variant="outline-success mr-2" @click="() => getData()">
+                <span class="icon"><i class="fi flaticon-success"></i> Aplicar </span>
+              </b-button>
+              <b-button variant="outline-danger" @click="removeAllFilters">
+                <span class="icon"><i class="fi flaticon-cancel-button"></i> Quitar </span>
+                <b-badge variant="light">{{countTotalFilter}} <span class="sr-only">filtros aplicados</span></b-badge>
+              </b-button>
+            </b-nav>
+          </Widget>
+        </div>
         <b-nav class="d-flex justify-content-between">
-          <b-dropdown id="dropdown-left" variant="outline-secondary" class="m-2">
-            <template v-slot:button-content>
-              <span><span class="icon"><i class="fi flaticon-controls"></i></span> Filtros </span>
-            </template>
-            <b-dropdown-form>
-              <b-form-group>
-                <template v-slot:label>
-                  <b>Gastos:</b><br>
-                  <b-form-checkbox
-                    v-model="allSelected"
-                    :indeterminate="indeterminate"
-                    aria-describedby="flavours"
-                    aria-controls="flavours"
-                    @change="toggleAll"
-                  >
-                    {{ allSelected ? 'Un-select All' : 'Select All' }}
-                  </b-form-checkbox>
-                </template>
-              </b-form-group>
-            </b-dropdown-form>
-          </b-dropdown>
+          <b-button variant="outline-secondary" @click="() => showFilters ? (showFilters = false) : (showFilters = true)">
+            <span class="icon"><i class="fi flaticon-controls"></i> Filtros </span>
+            <b-badge variant="light">{{countTotalFilter}} <span class="sr-only">filtros aplicados</span></b-badge>
+          </b-button>
           <b-form @submit.prevent="search" class="d-sm-down-none" inline>
             <b-form-group>
               <b-input-group class="input-group-no-border">
@@ -86,6 +136,7 @@
 <script>
 /* eslint-enable */
 import Widget from '@/components/Widget/Widget';
+import SelectAll from '@/components/SelectAll/SelectAll';
 import { HTTP } from '../../_helpers/http-common'
 import { mapGetters } from 'vuex';
 import header from '@/_helpers/http-header'
@@ -94,7 +145,7 @@ import isScreen from '@/core/screenHelper';
 
 export default {
   name: 'Dashboard',
-  components: { Widget },
+  components: { Widget, SelectAll },
   data() {
     return {
         data: [],
@@ -115,17 +166,65 @@ export default {
           { key: 'banco', sortable: true },
           { key: 'gasto', sortable: true },
         ],
-        selected: [
-          'Comisiones',
-          'Medicinas'
-        ],
-        options: [
-          { text: 'Comisiones', value: 'Comisiones' },
-          { text: 'Cambios', value: 'Cambios' },
-          { text: 'Medicinas', value: 'Medicinas' },
-          { text: 'Salidas', value: 'Salidas' },
-          { text: 'Ayuda familiar', value: 'Ayuda familiar' }
-        ],
+        showFilters: false,
+        filters: {
+          gastos: {
+            selected: [
+              'Comisiones',
+              'Cambios',
+              'Medicinas',
+              'Salidas',
+              'Ayuda familiar'
+            ],
+            options: [
+              'Comisiones',
+              'Cambios',
+              'Medicinas',
+              'Salidas',
+              'Ayuda familiar'
+            ],
+            allSelected: true,
+            indeterminate: false
+          },
+          tipo: {
+            selected: [
+              'Ingresos',
+              'Egresos'
+            ],
+            options: [
+              'Ingresos',
+              'Egresos'
+            ],
+            allSelected: true,
+            indeterminate: false
+          },
+          medio: {
+            selected: [
+              'Efectivo',
+              'Transferencia'
+            ],
+            options: [
+              'Efectivo',
+              'Transferencia'
+            ],
+            allSelected: true,
+            indeterminate: false
+          },
+          banco: {
+            selected: [
+              'Chase',
+              'BofA',
+              'BanPan'
+            ],
+            options: [
+              'Chase',
+              'BofA',
+              'BanPan'
+            ],
+            allSelected: true,
+            indeterminate: false
+          }
+        },
         query: {
             search: ""
         },
@@ -138,13 +237,22 @@ export default {
     }),
     noIsBigScreen() {
       return !isScreen('xl') && !isScreen('lg')
+    },
+    countTotalFilter() {
+      var filters = this.filters
+      return (filters.gastos.selected.length + filters.tipo.selected.length + filters.medio.selected.length + filters.banco.selected.length)
     }
   },
   methods: {
+    removeAllFilters() {
+      for(var filter in this.filters) {
+        this.filters[filter].selected = []
+      }
+    },
     getData(search = '') {
         this.loading = true
         
-        HTTP.get(`movimientos?page=${this.currentPage}&limit=${this.perPage}&gasto=${this.selected.toString()}&search=${this.query.search}`, {
+        HTTP.get(`movimientos?page=${this.currentPage}&limit=${this.perPage}&gasto=${this.filters.gastos.selected.toString()}&search=${this.query.search}`, {
             headers: header(this.tokenValue)
         })
             .then(response => {
@@ -178,17 +286,13 @@ export default {
     })
   },
   watch: {
-      currentPage: function() {
-          this.getData()
-      },
-      selected: function() {
-        this.currentPage = 1
+    currentPage: function() {
         this.getData()
-      },
-      perPage: function() {
-        this.currentPage = 1
-        this.getData()
-      }
+    },
+    perPage: function() {
+      this.currentPage = 1
+      this.getData()
+    }
   }
 };
 </script>
