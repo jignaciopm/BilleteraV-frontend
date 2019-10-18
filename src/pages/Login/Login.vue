@@ -89,10 +89,9 @@ export default {
         })
       }
       else {
-        this.$vs.notify({
-          title:'Campos Requeridos',
-          text:'Complete todos los campos requeridos para hacer login',
-          color:'danger'
+        this.$bvToast.toast(`Complete todos los campos para hacer login`, {
+          title: 'Campos Requeridos',
+          autoHideDelay: 5000
         })
       }
     }
