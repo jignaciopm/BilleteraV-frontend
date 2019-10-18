@@ -9,7 +9,7 @@
         <div v-show="showFilters">
           <Widget class="h-100 mb-3" title="Filtros">
             <b-row>
-              <b-col lg="3" sm="6" xs="12">
+              <b-col lg="6" sm="6" xs="12">
                 <div class="pb-xlg h-100">
                   <h4 class="mb-3">Gastos</h4>
                   <select-all 
@@ -22,33 +22,7 @@
                     :allSelected.sync="filters.gastos.allSelected" />
                 </div>
               </b-col>
-              <b-col lg="3" sm="6" xs="12">
-                <div class="pb-xlg h-100">
-                  <h4 class="mb-3">Tipo</h4>
-                  <select-all 
-                    name="tipo"
-                    selectAll="Seleccionar todos"
-                    unSelectAll="Deseleccionar todos"
-                    :options="filters.tipo.options"
-                    :selected.sync="filters.tipo.selected"
-                    :indeterminate.sync="filters.tipo.indeterminate"
-                    :allSelected.sync="filters.tipo.allSelected" />
-                </div>
-              </b-col>
-              <b-col lg="3" sm="6" xs="12">
-                <div class="pb-xlg h-100">
-                  <h4 class="mb-3">Medio</h4>
-                  <select-all 
-                    name="medio"
-                    selectAll="Seleccionar todos"
-                    unSelectAll="Deseleccionar todos"
-                    :options="filters.medio.options"
-                    :selected.sync="filters.medio.selected"
-                    :indeterminate.sync="filters.medio.indeterminate"
-                    :allSelected.sync="filters.medio.allSelected" />
-                </div>
-              </b-col>
-              <b-col lg="3" sm="6" xs="12">
+              <b-col lg="6" sm="6" xs="12">
                 <div class="pb-xlg h-100">
                   <h4 class="mb-3">Banco</h4>
                   <select-all 
@@ -59,6 +33,37 @@
                     :selected.sync="filters.banco.selected"
                     :indeterminate.sync="filters.banco.indeterminate"
                     :allSelected.sync="filters.banco.allSelected" />
+                </div>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Tipo</h4>
+                  <b-form-group>
+                    <b-form-radio v-model="filters.tipo.selected" name="tipo" value="">Todos</b-form-radio>
+                    <b-form-radio v-model="filters.tipo.selected" name="tipo" value="incomes">Ingresos (+)</b-form-radio>
+                    <b-form-radio v-model="filters.tipo.selected" name="tipo" value="expenses">Egresos (-)</b-form-radio>
+                  </b-form-group>
+                </div>
+              </b-col>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Medio</h4>
+                  <b-form-group>
+                    <b-form-radio v-model="filters.medio.selected" name="medio" value="">Todos</b-form-radio>
+                    <b-form-radio v-model="filters.medio.selected" name="medio" value="cash">Efectivo</b-form-radio>
+                    <b-form-radio v-model="filters.medio.selected" name="medio" value="transfer">Transferencia</b-form-radio>
+                  </b-form-group>
+                </div>
+              </b-col>
+              <b-col lg="3" sm="6" xs="12">
+                <div class="pb-xlg h-100">
+                  <h4 class="mb-3">Montos</h4>
+                  <label for="range-1">Monto minimo: {{filters.monto.selected.min}}</label>
+                  <b-form-input id="range-1" v-model="filters.monto.selected.min" type="range" step="50" min="0" max="2000" ref="min"/>
+                  <label for="range-2">Monto maximo: {{filters.monto.selected.max}}</label>
+                  <b-form-input id="range-2" v-model="filters.monto.selected.max" type="range" step="50" :min="filters.monto.inMaxThisMin" max="10000" ref="max"/>
                 </div>
               </b-col>
             </b-row>
@@ -187,28 +192,22 @@ export default {
             indeterminate: false
           },
           tipo: {
-            selected: [
-              'Ingresos',
-              'Egresos'
-            ],
-            options: [
+            selected: '',
+            /* options: [
               'Ingresos',
               'Egresos'
             ],
             allSelected: true,
-            indeterminate: false
+            indeterminate: false */
           },
           medio: {
-            selected: [
-              'Efectivo',
-              'Transferencia'
-            ],
-            options: [
+            selected: '',
+            /* options: [
               'Efectivo',
               'Transferencia'
             ],
             allSelected: true,
-            indeterminate: false
+            indeterminate: false */
           },
           banco: {
             selected: [
@@ -223,7 +222,14 @@ export default {
             ],
             allSelected: true,
             indeterminate: false
-          }
+          },
+          monto: {
+            selected: {
+              min: 0,
+              max: 10000
+            },
+            inMaxThisMin: 0
+          },
         },
         query: {
             search: ""
@@ -246,7 +252,13 @@ export default {
   methods: {
     removeAllFilters() {
       for(var filter in this.filters) {
-        this.filters[filter].selected = []
+        if(filter != 'gastos' && filter != 'banco') {
+          this.filters[filter].selected = ''
+        } else this.filters[filter].selected = []
+      }
+      this.filters.monto.selected = {
+        min: 0,
+        max: 10000
       }
     },
     getData(search = '') {
@@ -292,6 +304,10 @@ export default {
     perPage: function() {
       this.currentPage = 1
       this.getData()
+    },
+    'filters.monto.selected.min': function(newVal, oldVal) {
+      this.filters.monto.inMaxThisMin = newVal
+      if(parseInt(newVal) >= parseInt(this.filters.monto.selected.max)) this.filters.monto.selected.max = newVal
     }
   }
 };
